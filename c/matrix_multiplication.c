@@ -59,6 +59,31 @@ void load_matrix(const char *filename, int **matrix, int n) {
     fclose(file);
 }
 
+
+void save_matrix(const char *filename, int **matrix, int n) {
+    FILE *file = fopen(filename, "w");
+
+    if (file == NULL) {
+        perror("Error creating result file");
+        exit(EXIT_FAILURE);
+    }
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            fprintf(file, "%d", matrix[i][j]);
+
+            if (j < n - 1) {
+                fprintf(file, ",");
+            }
+        }
+
+        fprintf(file, "\n");
+    }
+
+    fclose(file);
+}
+
+
 void matrix_multiplication(int **A, int **B, int **C, int n) {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
@@ -101,6 +126,12 @@ int main(int argc, char *argv[]) {
     load_matrix(filenameB, B, n);
 
     matrix_multiplication(A, B, C, n);
+
+    char resultFilename[256];
+
+    snprintf(resultFilename, sizeof(resultFilename), "results/c_%d.csv", n);
+
+    save_matrix(resultFilename, C, n);
 
     printf("Matrix multiplication completed: %dx%d\n", n, n);
     printf("Result verification value: %d\n", C[0][0]);

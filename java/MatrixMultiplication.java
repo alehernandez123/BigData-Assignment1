@@ -2,6 +2,9 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+
 
 public class MatrixMultiplication {
 
@@ -50,6 +53,26 @@ public class MatrixMultiplication {
         return C;
     }
 
+    
+    public static void saveMatrix(int[][] matrix, String filename) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            int n = matrix.length;
+
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    writer.write(Integer.toString(matrix[i][j]));
+
+                    if (j < n - 1) {
+                        writer.write(",");
+                    }
+                }
+
+                writer.newLine();
+            }
+        }
+    }
+
+
     public static void main(String[] args) throws IOException {
         if (args.length != 1) {
             System.out.println("Usage: java MatrixMultiplication <size>");
@@ -64,6 +87,8 @@ public class MatrixMultiplication {
         int[][] B = loadMatrix(matrixDir + "B_" + n + ".csv", n);
 
         int[][] C = matrixMultiplication(A, B);
+
+        saveMatrix(C, "results/java_" + n + ".csv");
 
         System.out.println("Matrix multiplication completed: " + n + "x" + n);
         System.out.println("Result verification value: " + C[0][0]);

@@ -10,6 +10,12 @@ def load_matrix(filename):
         return [[int(value) for value in row] for row in reader]
 
 
+def save_matrix(matrix, filename):
+    with open(filename, "w", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+        writer.writerows(matrix)
+
+
 def matrix_multiplication(A, B):
     n = len(A)
 
@@ -37,6 +43,13 @@ def main():
     B = load_matrix(matrix_dir / f"B_{n}.csv")
 
     C = matrix_multiplication(A, B)
+
+    
+    results_dir = project_dir / "results"
+    results_dir.mkdir(exist_ok=True)
+
+    save_matrix(C, results_dir / f"python_{n}.csv")
+
 
     print(f"Matrix multiplication completed: {n}x{n}")
     print(f"Result verification value: {C[0][0]}")
