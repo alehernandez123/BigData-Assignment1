@@ -2,6 +2,7 @@
 import csv
 import sys
 from pathlib import Path
+import time
 
 
 def load_matrix(filename):
@@ -42,7 +43,15 @@ def main():
     A = load_matrix(matrix_dir / f"A_{n}.csv")
     B = load_matrix(matrix_dir / f"B_{n}.csv")
 
+    
+    start_time = time.perf_counter()
+
     C = matrix_multiplication(A, B)
+
+    end_time = time.perf_counter()
+
+    execution_time = end_time - start_time
+
 
     
     results_dir = project_dir / "results"
@@ -53,6 +62,7 @@ def main():
 
     print(f"Matrix multiplication completed: {n}x{n}")
     print(f"Result verification value: {C[0][0]}")
+    print(f"Execution time: {execution_time:.6f} seconds")
 
 
 if __name__ == "__main__":

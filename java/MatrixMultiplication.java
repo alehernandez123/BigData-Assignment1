@@ -73,6 +73,7 @@ public class MatrixMultiplication {
     }
 
 
+    
     public static void main(String[] args) throws IOException {
         if (args.length != 1) {
             System.out.println("Usage: java MatrixMultiplication <size>");
@@ -86,11 +87,38 @@ public class MatrixMultiplication {
         int[][] A = loadMatrix(matrixDir + "A_" + n + ".csv", n);
         int[][] B = loadMatrix(matrixDir + "B_" + n + ".csv", n);
 
-        int[][] C = matrixMultiplication(A, B);
+        int warmupRepetitions = 3;
+        int repetitions = 5;
 
-        saveMatrix(C, "results/java_" + n + ".csv");
+        // JVM warm-up
+        for (int i = 0; i < warmupRepetitions; i++) {
+            matrixMultiplication(A, B);
+        }
 
-        System.out.println("Matrix multiplication completed: " + n + "x" + n);
-        System.out.println("Result verification value: " + C[0][0]);
+        // Benchmark
+        for (int repetition = 1; repetition <= repetitions; repetition++) {
+            long startTime = System.nanoTime();
+
+            int[][] C = matrixMultiplication(A, B);
+
+            long endTime = System.nanoTime();
+
+            double executionTime =
+                    (endTime - startTime) / 1_000_000_000.0;
+
+            System.out.printf(
+                    java.util.Locale.US,
+                    "RESULT,%d,%d,%.9f%n",
+                    n,
+                    repetition,
+                    executionTime
+            );
+
+            // Save one result for validation
+            if (repetition == 1) {
+                saveMatrix(C, "results/java_" + n + ".csv");
+            }
+        }
     }
+
 }
